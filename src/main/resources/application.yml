@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: payment-integration-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/payment_db
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+server:
+  port: 8080
