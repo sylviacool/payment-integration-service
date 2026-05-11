@@ -15,3 +15,10 @@ spring:
 
 server:
   port: 8080
+
+
+  paypal:
+    client-id: ${PAYPAL_CLIENT_ID}
+    client-secret: ${PAYPAL_CLIENT_SECRET}
+    oauth-url: https://api-m.sandbox.paypal.com/v1/oauth2/token
+    create-order-url: https://api-m.sandbox.paypal.com/v2/checkout/orders
