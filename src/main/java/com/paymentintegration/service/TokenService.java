@@ -3,6 +3,7 @@ package com.paymentintegration.service;
 import com.paymentintegration.constant.Constants;
 import com.paymentintegration.http.HttpRequest;
 import com.paymentintegration.http.HttpServiceEngine;
+import com.paymentintegration.paypal.PaypalAuthResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +36,7 @@ public class TokenService {
 
         log.info("Generating PayPal access token");
 
+        //headers
         HttpHeaders headers = new HttpHeaders();
 
         headers.setBasicAuth(clientId, clientSecret);
@@ -42,8 +45,10 @@ public class TokenService {
                 MediaType.APPLICATION_FORM_URLENCODED
         );
 
+        //body
         MultiValueMap<String, String> body =
                 new LinkedMultiValueMap<>();
+
 
         body.add(
                 Constants.GRANT_TYPE,
@@ -62,6 +67,28 @@ public class TokenService {
 
         log.info("OAuth response received: {}", response.getBody());
 
-        return response.getBody();
+        try {
+
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            PaypalAuthResponse authResponse =
+                    objectMapper.readValue(
+                            response.getBody(),
+                            PaypalAuthResponse.class
+                    );
+
+            log.info("Access token generated successfully");
+
+            return authResponse.getAccessToken();
+
+        } catch (Exception e) {
+
+            log.error("Error parsing PayPal OAuth response", e);
+
+            throw new RuntimeException(
+                    "Failed to parse PayPal OAuth response",
+                    e
+            );
+        }
     }
 }

@@ -20,5 +20,5 @@ server:
   paypal:
     client-id: ${PAYPAL_CLIENT_ID}
     client-secret: ${PAYPAL_CLIENT_SECRET}
-    oauth-url: https://api-m.sandbox.paypal.com/v1/oauth2/token
+    oauth-url: ${PAYPAL_OAUTH_URL}
     create-order-url: https://api-m.sandbox.paypal.com/v2/checkout/orders
