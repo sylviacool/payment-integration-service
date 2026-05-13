@@ -2,6 +2,8 @@ package com.paymentintegration.service.impl;
 
 
 import com.paymentintegration.dto.paypal.createorder.request.CreateOrderRequest;
+import com.paymentintegration.dto.paypal.createorder.response.CreateOrderResponse;
+import com.paymentintegration.dto.paypal.createorder.response.LinkDescription;
 import com.paymentintegration.dto.request.CreateOrderReq;
 import com.paymentintegration.dto.response.OrderRes;
 import com.paymentintegration.helper.CreateOrderHelper;
@@ -84,9 +86,41 @@ public class OrderServiceImpl implements OrderService {
             log.info("PayPal create order response: {}",
                     response.getBody());
 
+            ObjectMapper responseMapper =
+                    new ObjectMapper();
+
+            CreateOrderResponse createOrderResponse =
+                    responseMapper.readValue(
+                            response.getBody(),
+                            CreateOrderResponse.class
+                    );
+
+
+            String redirectUrl = null;
+
+            for (LinkDescription link :
+                    createOrderResponse.getLinks()) {
+
+                if ("approve".equals(link.getRel())) {
+
+                    redirectUrl = link.getHref();
+                }
+            }
+
+
             OrderRes orderRes = new OrderRes();
 
-            orderRes.setPaypalStatus("SUCCESS");
+            orderRes.setOrderId(
+                    createOrderResponse.getId()
+            );
+
+            orderRes.setPaypalStatus(
+                    createOrderResponse.getStatus()
+            );
+
+            orderRes.setRedirectUrl(
+                    redirectUrl
+            );
 
             return orderRes;
 
