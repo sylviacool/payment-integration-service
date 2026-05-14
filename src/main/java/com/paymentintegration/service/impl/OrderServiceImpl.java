@@ -105,7 +105,8 @@ public class OrderServiceImpl implements OrderService {
             for (LinkDescription link :
                     createOrderResponse.getLinks()) {
 
-                if ("approve".equals(link.getRel())) {
+                if ("approve".equals(link.getRel())
+                        || "payer-action".equals(link.getRel())) {
 
                     redirectUrl = link.getHref();
                 }
