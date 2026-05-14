@@ -6,4 +6,5 @@ import com.paymentintegration.dto.response.OrderRes;
 public interface OrderService {
 
     OrderRes createOrder(CreateOrderReq createOrderReq);
+    OrderRes captureOrder(String orderId);
 }

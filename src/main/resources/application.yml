@@ -22,3 +22,4 @@ server:
     client-secret: ${PAYPAL_CLIENT_SECRET}
     oauth-url: ${PAYPAL_OAUTH_URL}
     create-order-url: ${PAYPAL_CREATE_ORDER_URL}
+    capture-order-url: ${PAYPAL_CAPTURE_ORDER_URL}

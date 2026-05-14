@@ -29,4 +29,20 @@ public class OrderController {
 
         return ResponseEntity.ok(response);
     }
+
+
+    @PostMapping("/{orderId}/capture")
+    public ResponseEntity<OrderRes> captureOrder(
+            @PathVariable String orderId
+    ) {
+
+        log.info("Capture order request received: {}",
+                orderId);
+
+        OrderRes response =
+                orderService.captureOrder(orderId);
+
+        return ResponseEntity.ok(response);
+    }
+
 }

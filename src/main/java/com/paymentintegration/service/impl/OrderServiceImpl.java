@@ -1,6 +1,7 @@
 package com.paymentintegration.service.impl;
 
 
+import com.paymentintegration.dto.paypal.capture.response.CaptureOrderResponse;
 import com.paymentintegration.dto.paypal.createorder.request.CreateOrderRequest;
 import com.paymentintegration.dto.paypal.createorder.response.CreateOrderResponse;
 import com.paymentintegration.dto.paypal.createorder.response.LinkDescription;
@@ -28,6 +29,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Value("${paypal.create-order-url}")
     private String createOrderUrl;
+
+    @Value("${paypal.capture-order-url}")
+    private String captureOrderUrl;
 
     private final TokenService tokenService;
 
@@ -130,5 +134,79 @@ public class OrderServiceImpl implements OrderService {
 
             throw new RuntimeException(e);
         }
+
     }
+
+
+    @Override
+    public OrderRes captureOrder(String orderId) {
+
+        try {
+
+            log.info("Capturing PayPal order: {}", orderId);
+
+            String accessToken =
+                    tokenService.getAccessToken();
+
+            String url =
+                    captureOrderUrl +
+                            "/" +
+                            orderId +
+                            "/capture";
+
+            HttpHeaders headers =
+                    new HttpHeaders();
+
+            headers.setBearerAuth(accessToken);
+
+            headers.setContentType(
+                    MediaType.APPLICATION_JSON
+            );
+
+            HttpRequest httpRequest =
+                    HttpRequest.builder()
+                            .httpMethod(HttpMethod.POST)
+                            .uri(url)
+                            .httpHeaders(headers)
+                            .body("")
+                            .build();
+
+            ResponseEntity<String> response =
+                    httpServiceEngine.makeHttpCall(
+                            httpRequest
+                    );
+
+            log.info("Capture response: {}",
+                    response.getBody());
+
+            ObjectMapper objectMapper =
+                    new ObjectMapper();
+
+            CaptureOrderResponse captureResponse =
+                    objectMapper.readValue(
+                            response.getBody(),
+                            CaptureOrderResponse.class
+                    );
+
+            OrderRes orderRes =
+                    new OrderRes();
+
+            orderRes.setOrderId(
+                    captureResponse.getId()
+            );
+
+            orderRes.setPaypalStatus(
+                    captureResponse.getStatus()
+            );
+
+            return orderRes;
+
+        } catch (Exception e) {
+
+            log.error("Error capturing PayPal order", e);
+
+            throw new RuntimeException(e);
+        }
+    }
+
 }
