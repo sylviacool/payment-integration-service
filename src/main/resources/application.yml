@@ -1,25 +1,44 @@
 spring:
+
+  # =========================================
+  # Application Config
+  # =========================================
   application:
     name: payment-integration-service
 
-  datasource:
-    url: jdbc:mysql://localhost:3307/payment_db
-    username: root
-    password: root
 
+  # =========================================
+  # PostgreSQL Database Config
+  # =========================================
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_db
+    username: payments_user
+    password: postgres123
+
+
+  # =========================================
+  # JPA / Hibernate Config
+  # =========================================
   jpa:
     hibernate:
       ddl-auto: update
 
     show-sql: true
 
+
+# =========================================
+# Server Config
+# =========================================
 server:
   port: 8080
 
 
-  paypal:
-    client-id: ${PAYPAL_CLIENT_ID}
-    client-secret: ${PAYPAL_CLIENT_SECRET}
-    oauth-url: ${PAYPAL_OAUTH_URL}
-    create-order-url: ${PAYPAL_CREATE_ORDER_URL}
-    capture-order-url: ${PAYPAL_CAPTURE_ORDER_URL}
+# =========================================
+# PayPal API Config
+# =========================================
+paypal:
+  client-id: ${PAYPAL_CLIENT_ID}
+  client-secret: ${PAYPAL_CLIENT_SECRET}
+  oauth-url: ${PAYPAL_OAUTH_URL}
+  create-order-url: ${PAYPAL_CREATE_ORDER_URL}
+  capture-order-url: ${PAYPAL_CAPTURE_ORDER_URL}
