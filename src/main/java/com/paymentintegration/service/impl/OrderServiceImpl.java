@@ -219,6 +219,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderRes captureOrder(String orderId) {
 
+        TransactionEntity transactionEntity = null;
+
         try {
 
             log.info("Capturing PayPal order: {}", orderId);
@@ -235,7 +237,7 @@ public class OrderServiceImpl implements OrderService {
                             );
 
 
-            TransactionEntity transactionEntity =
+            transactionEntity =
                     transactionRepository
                             .findByProviderReference(orderId)
                             .orElseThrow(() ->
@@ -304,6 +306,26 @@ public class OrderServiceImpl implements OrderService {
         } catch (Exception e) {
 
             log.error("Error capturing PayPal order", e);
+
+            TransactionStatusEntity failedStatus =
+                    transactionStatusRepository
+                            .findByName("FAILED")
+                            .orElseThrow(() ->
+                                    new RuntimeException("FAILED status not found")
+                            );
+
+            if (transactionEntity != null) {
+
+                transactionEntity.setTransactionStatus(
+                        failedStatus
+                );
+
+                transactionEntity.setErrorMessage(
+                        e.getMessage()
+                );
+
+                transactionRepository.save(transactionEntity);
+            }
 
             throw new RuntimeException(e);
         }
