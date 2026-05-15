@@ -210,7 +210,7 @@ public class OrderServiceImpl implements OrderService {
 
             log.error("Error creating PayPal order", e);
 
-            throw new RuntimeException(e);
+            throw new RuntimeException( "Failed to create PayPal order");
         }
 
     }
@@ -327,7 +327,7 @@ public class OrderServiceImpl implements OrderService {
                 transactionRepository.save(transactionEntity);
             }
 
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to capture PayPal order");
         }
     }
 
