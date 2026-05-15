@@ -114,6 +114,13 @@ public class OrderServiceImpl implements OrderService {
                                     new RuntimeException("Transaction status not found")
                             );
 
+            TransactionStatusEntity pendingStatus =
+                    transactionStatusRepository
+                            .findByName("PENDING")
+                            .orElseThrow(() ->
+                                    new RuntimeException("Pending status not found")
+                            );
+
 
             TransactionEntity transactionEntity =
                     new TransactionEntity();
@@ -150,11 +157,24 @@ public class OrderServiceImpl implements OrderService {
             ObjectMapper responseMapper =
                     new ObjectMapper();
 
+
+
             CreateOrderResponse createOrderResponse =
                     responseMapper.readValue(
                             response.getBody(),
                             CreateOrderResponse.class
                     );
+
+
+            transactionEntity.setProviderReference(
+                    createOrderResponse.getId()
+            );
+
+            transactionEntity.setTransactionStatus(
+                    pendingStatus
+            );
+
+            transactionRepository.save(transactionEntity);
 
 
             String redirectUrl = null;
