@@ -21,19 +21,20 @@ public class TransactionEntity {
 
     private String currency;
 
-    private String providerReference;
-
-    private String merchantTransactionReference;
-
     private String txnReference;
+
+    @Column(name = "paypal_order_id")
+    private String providerReference;
 
     private String errorCode;
 
     private String errorMessage;
 
-    private Integer retryCount;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    private LocalDateTime creationDate;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "provider_id")
