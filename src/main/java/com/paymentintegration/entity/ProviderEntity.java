@@ -12,5 +12,6 @@ public class ProviderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "provider_name")
     private String providerName;
 }
