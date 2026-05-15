@@ -226,6 +226,22 @@ public class OrderServiceImpl implements OrderService {
             String accessToken =
                     tokenService.getAccessToken();
 
+
+            TransactionStatusEntity successStatus =
+                    transactionStatusRepository
+                            .findByName("SUCCESS")
+                            .orElseThrow(() ->
+                                    new RuntimeException("SUCCESS status not found")
+                            );
+
+
+            TransactionEntity transactionEntity =
+                    transactionRepository
+                            .findByProviderReference(orderId)
+                            .orElseThrow(() ->
+                                    new RuntimeException("Transaction not found")
+                            );
+
             String url =
                     captureOrderUrl +
                             "/" +
@@ -265,6 +281,12 @@ public class OrderServiceImpl implements OrderService {
                             response.getBody(),
                             CaptureOrderResponse.class
                     );
+
+            transactionEntity.setTransactionStatus(
+                    successStatus
+            );
+
+            transactionRepository.save(transactionEntity);
 
             OrderRes orderRes =
                     new OrderRes();
