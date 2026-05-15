@@ -23,7 +23,7 @@ public class TransactionEntity {
 
     private String txnReference;
 
-    @Column(name = "paypal_order_id")
+    @Column(name = "provider_reference")
     private String providerReference;
 
     private String errorCode;
