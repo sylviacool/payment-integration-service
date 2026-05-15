@@ -3,6 +3,7 @@ package com.paymentintegration.controller;
 import com.paymentintegration.dto.request.CreateOrderReq;
 import com.paymentintegration.dto.response.OrderRes;
 import com.paymentintegration.service.interfaces.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderRes> createOrder(
+    public ResponseEntity<OrderRes> createOrder(@Valid
             @RequestBody CreateOrderReq createOrderReq
     ) {
 
