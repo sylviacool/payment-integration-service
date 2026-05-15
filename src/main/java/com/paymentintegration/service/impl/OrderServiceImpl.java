@@ -10,6 +10,7 @@ import com.paymentintegration.dto.response.OrderRes;
 import com.paymentintegration.entity.ProviderEntity;
 import com.paymentintegration.entity.TransactionEntity;
 import com.paymentintegration.entity.TransactionStatusEntity;
+import com.paymentintegration.exception.ResourceNotFoundException;
 import com.paymentintegration.helper.CreateOrderHelper;
 import com.paymentintegration.http.HttpRequest;
 import com.paymentintegration.http.HttpServiceEngine;
@@ -102,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
                     providerRepository
                             .findByProviderName("PAYPAL")
                             .orElseThrow(() ->
-                                    new RuntimeException("Provider not found")
+                                    new ResourceNotFoundException("Provider not found")
                             );
 
 
@@ -111,14 +112,14 @@ public class OrderServiceImpl implements OrderService {
                     transactionStatusRepository
                             .findByName("CREATED")
                             .orElseThrow(() ->
-                                    new RuntimeException("Transaction status not found")
+                                    new ResourceNotFoundException("Transaction status not found")
                             );
 
             TransactionStatusEntity pendingStatus =
                     transactionStatusRepository
                             .findByName("PENDING")
                             .orElseThrow(() ->
-                                    new RuntimeException("Pending status not found")
+                                    new ResourceNotFoundException("Pending status not found")
                             );
 
 
@@ -233,7 +234,7 @@ public class OrderServiceImpl implements OrderService {
                     transactionStatusRepository
                             .findByName("SUCCESS")
                             .orElseThrow(() ->
-                                    new RuntimeException("SUCCESS status not found")
+                                    new ResourceNotFoundException("SUCCESS status not found")
                             );
 
 
@@ -241,7 +242,7 @@ public class OrderServiceImpl implements OrderService {
                     transactionRepository
                             .findByProviderReference(orderId)
                             .orElseThrow(() ->
-                                    new RuntimeException("Transaction not found")
+                                    new ResourceNotFoundException("Transaction not found")
                             );
 
             String url =
