@@ -7,9 +7,15 @@ import com.paymentintegration.dto.paypal.createorder.response.CreateOrderRespons
 import com.paymentintegration.dto.paypal.createorder.response.LinkDescription;
 import com.paymentintegration.dto.request.CreateOrderReq;
 import com.paymentintegration.dto.response.OrderRes;
+import com.paymentintegration.entity.ProviderEntity;
+import com.paymentintegration.entity.TransactionEntity;
+import com.paymentintegration.entity.TransactionStatusEntity;
 import com.paymentintegration.helper.CreateOrderHelper;
 import com.paymentintegration.http.HttpRequest;
 import com.paymentintegration.http.HttpServiceEngine;
+import com.paymentintegration.repository.ProviderRepository;
+import com.paymentintegration.repository.TransactionRepository;
+import com.paymentintegration.repository.TransactionStatusRepository;
 import com.paymentintegration.service.TokenService;
 import com.paymentintegration.service.interfaces.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +28,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
+import java.math.BigDecimal;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class OrderServiceImpl implements OrderService {
+
+    private final TransactionRepository transactionRepository;
+
+    private final ProviderRepository providerRepository;
+
+    private final TransactionStatusRepository transactionStatusRepository;
 
     @Value("${paypal.create-order-url}")
     private String createOrderUrl;
@@ -81,6 +96,48 @@ public class OrderServiceImpl implements OrderService {
                             .httpHeaders(headers)
                             .body(requestBody)
                             .build();
+
+
+            ProviderEntity provider =
+                    providerRepository
+                            .findByProviderName("PAYPAL")
+                            .orElseThrow(() ->
+                                    new RuntimeException("Provider not found")
+                            );
+
+
+
+            TransactionStatusEntity createdStatus =
+                    transactionStatusRepository
+                            .findByName("CREATED")
+                            .orElseThrow(() ->
+                                    new RuntimeException("Transaction status not found")
+                            );
+
+
+            TransactionEntity transactionEntity =
+                    new TransactionEntity();
+
+            transactionEntity.setUserId(1L);
+
+            transactionEntity.setAmount(
+                    new BigDecimal(createOrderReq.getAmount())
+            );
+
+            transactionEntity.setCurrency(
+                    createOrderReq.getCurrency()
+            );
+
+            transactionEntity.setTxnReference(
+                    UUID.randomUUID().toString()
+            );
+
+            transactionEntity.setProvider(provider);
+
+            transactionEntity.setTransactionStatus(createdStatus);
+
+            transactionRepository.save(transactionEntity);
+
 
             ResponseEntity<String> response =
                     httpServiceEngine.makeHttpCall(
