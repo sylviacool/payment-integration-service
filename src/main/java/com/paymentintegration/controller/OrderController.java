@@ -3,6 +3,7 @@ package com.paymentintegration.controller;
 import com.paymentintegration.dto.request.CreateOrderReq;
 import com.paymentintegration.dto.response.OrderRes;
 import com.paymentintegration.service.interfaces.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class OrderController {
 
+
     private final OrderService orderService;
 
+    @Operation(
+            summary = "Create PayPal order",
+            description = "Creates a PayPal payment order"
+    )
     @PostMapping
     public ResponseEntity<OrderRes> createOrder(@Valid
             @RequestBody CreateOrderReq createOrderReq
@@ -32,6 +38,10 @@ public class OrderController {
     }
 
 
+    @Operation(
+            summary = "Capture PayPal order",
+            description = "Captures approved PayPal payment"
+    )
     @PostMapping("/{orderId}/capture")
     public ResponseEntity<OrderRes> captureOrder(
             @PathVariable String orderId
