@@ -14,7 +14,7 @@ import java.util.Map;
 public class JwtService {
 
     private static final String SECRET_KEY =
-            "myVerySecretKeyForJwtAuthentication123456";
+            "mySuperSecretJwtKeyForPaymentIntegrationProject2026";
 
     public String generateToken(String username) {
 
