@@ -54,10 +54,7 @@ public class JwtService {
         return extractAllClaims(token).getSubject();
     }
 
-    public boolean isTokenValid(
-            String token,
-            String username
-    ) {
+    public boolean isTokenValid(String token, String username) {
 
         final String extractedUsername =
                 extractUsername(token);
