@@ -12,4 +12,5 @@ public interface TransactionRepository
 
     Optional<TransactionEntity> findByProviderReference(String providerReference);
 
+
 }

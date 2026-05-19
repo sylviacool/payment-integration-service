@@ -2,16 +2,24 @@ package com.paymentintegration.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paymentintegration.entity.TransactionEntity;
+import com.paymentintegration.entity.TransactionStatusEntity;
+import com.paymentintegration.repository.TransactionRepository;
+import com.paymentintegration.repository.TransactionStatusRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/webhooks")
 @Slf4j
 public class WebhookController {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final TransactionRepository transactionRepository;
+    private final TransactionStatusRepository transactionStatusRepository;
 
     @PostMapping("/paypal")
     public ResponseEntity<String> handlePaypalWebhook(
@@ -23,12 +31,9 @@ public class WebhookController {
         try {
             log.info("PayPal Webhook Received");
             log.info("Transmission ID: {}", transmissionId);
+            JsonNode root = objectMapper.readTree(payload);
 
-            JsonNode root =
-                    objectMapper.readTree(payload);
-
-            String eventType =
-                    root.get("event_type").asText();
+            String eventType = root.get("event_type").asText();
 
             log.info("Event Type: {}", eventType);
 
@@ -41,7 +46,21 @@ public class WebhookController {
 
             switch (eventType) {
                 case "PAYMENT.CAPTURE.COMPLETED":
-                    log.info("Payment completed successfully");
+                    TransactionEntity transaction = transactionRepository.findByProviderReference(paypalOrderId)
+                                    .orElseThrow(() -> new RuntimeException("Transaction not found")
+                                    );
+
+                    TransactionStatusEntity completedStatus = transactionStatusRepository.findByName("SUCCESS")
+                                    .orElseThrow(() -> new RuntimeException("Status not found")
+                                    );
+
+                    transaction.setTransactionStatus(completedStatus);
+
+                    transactionRepository.save(transaction);
+
+                    log.info(
+                            "Transaction updated to SUCCESS"
+                    );
                     break;
 
                 case "PAYMENT.CAPTURE.DENIED":
