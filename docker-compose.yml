@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: postgres
 
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   app:
     build: .
@@ -19,7 +19,7 @@ services:
     container_name: payment-app
 
     ports:
-      - "8080:8080"
+      - "8090:8080"
 
     depends_on:
       - postgres
