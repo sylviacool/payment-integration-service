@@ -2,13 +2,11 @@ package com.paymentintegration.controller;
 
 import com.paymentintegration.dto.request.AuthRequest;
 import com.paymentintegration.dto.response.AuthResponse;
-import com.paymentintegration.security.JwtService;
+import com.paymentintegration.service.interfaces.AuthService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,28 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final JwtService jwtService;
-
-    private final AuthenticationManager authenticationManager;
+    private final AuthService authService;
 
     @PostMapping("/login")
-    public AuthResponse login(
-            @RequestBody AuthRequest request
-    ) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
 
-        authenticationManager.authenticate(
+        AuthResponse response = authService.login(request);
 
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
-
-        String token =
-                jwtService.generateToken(
-                        request.getUsername()
-                );
-
-        return new AuthResponse(token);
+        return ResponseEntity.ok(response);
     }
 }
