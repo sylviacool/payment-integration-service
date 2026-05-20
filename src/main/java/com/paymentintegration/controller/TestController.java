@@ -16,4 +16,10 @@ public class TestController {
 
         return tokenService.getAccessToken();
     }
+
+    @GetMapping("/public/health")
+    public String health() {
+
+        return "Application is running";
+    }
 }
