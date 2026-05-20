@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/v1/webhooks/**",
-                                "/public/**"
+                                "/public/**",
+                                "/public/health"
                         ).permitAll()
                         .anyRequest()
                         .hasRole("ADMIN")
