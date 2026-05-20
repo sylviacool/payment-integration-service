@@ -1,18 +1,21 @@
+# Build stage
 FROM maven:3.9.6-eclipse-temurin-21 AS build
-
 WORKDIR /app
 
-COPY . .
+# Copy only pom.xml first (better caching)
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
 
+# Copy source code and build
+COPY src ./src
 RUN mvn clean package -DskipTests
 
-
-FROM eclipse-temurin:21-jdk
-
+# Runtime stage
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-COPY --from=build /app/target/payment-integration-service-0.0.1-SNAPSHOT.jar app.jar
+# Copy the JAR from build stage - use wildcard to handle version
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
