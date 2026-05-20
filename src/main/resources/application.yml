@@ -20,9 +20,10 @@ spring:
   # PostgreSQL Database Config
   # =========================================
   datasource:
-    url: jdbc:postgresql://localhost:5432/payment_db
-    username: payments_user
-    password: postgres123
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/payment_db}
+    username: ${SPRING_DATASOURCE_USERNAME:payments_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres123}
+
 
 
   # =========================================
