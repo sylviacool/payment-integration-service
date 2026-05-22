@@ -20,6 +20,6 @@ public class TestController {
     @GetMapping("/public/health")
     public String health() {
 
-        return "Application is running";
+        return "Application is running successfully";
     }
 }
