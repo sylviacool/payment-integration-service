@@ -4,9 +4,12 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
@@ -17,27 +20,23 @@ public class SwaggerConfig {
         final String securitySchemeName = "basicAuth";
 
         return new OpenAPI()
+                .info(new Info()
+                        .title("Payment Integration API")
+                        .version("1.0")
+                        .description("PayPal Payment Integration APIs"))
 
-                .info(
-                        new Info()
-                                .title("Payment Integration API")
-                                .version("1.0")
-                                .description("PayPal Payment Integration APIs")
-                )
+                .addSecurityItem(new SecurityRequirement()
+                        .addList(securitySchemeName))
 
-                .addSecurityItem(
-                        new SecurityRequirement()
-                                .addList(securitySchemeName)
-                )
+                .schemaRequirement(securitySchemeName, new SecurityScheme()
+                        .name(securitySchemeName)
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT"))
 
-                .schemaRequirement(
-                        securitySchemeName,
-
-                        new SecurityScheme()
-                                .name(securitySchemeName)
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")
-                );
+                .servers(List.of(
+                        new Server()
+                                .url("https://payment-integration-service-production-6867.up.railway.app")
+                ));
     }
 }
