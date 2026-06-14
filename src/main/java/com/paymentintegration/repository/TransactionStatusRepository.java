@@ -5,8 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface TransactionStatusRepository
-        extends JpaRepository<TransactionStatusEntity, Long> {
+public interface TransactionStatusRepository extends JpaRepository<TransactionStatusEntity, Long> {
 
     Optional<TransactionStatusEntity> findByName(String name);
 

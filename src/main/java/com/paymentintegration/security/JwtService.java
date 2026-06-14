@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -13,11 +14,10 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY =
-            "mySuperSecretJwtKeyForPaymentIntegrationProject2026";
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     public String generateToken(String username) {
-
         Map<String, Object> claims = new HashMap<>();
 
         return createToken(claims, username);
@@ -27,7 +27,6 @@ public class JwtService {
             Map<String, Object> claims,
             String username
     ) {
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -39,7 +38,7 @@ public class JwtService {
 
                 .signWith(
                         SignatureAlgorithm.HS256,
-                        SECRET_KEY
+                        secretKey
                 )
 
                 .compact();
@@ -70,7 +69,7 @@ public class JwtService {
 
         return Jwts.parser()
 
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(secretKey)
 
                 .parseClaimsJws(token)
 

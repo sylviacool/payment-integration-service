@@ -3,7 +3,7 @@ package com.paymentintegration.dto.response;
 import lombok.Data;
 
 @Data
-public class OrderRes {
+public class OrderRes {  //BE to FE
 
     private String orderId;
 

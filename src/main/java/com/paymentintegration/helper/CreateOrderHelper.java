@@ -17,9 +17,7 @@ import java.util.List;
 @Slf4j
 public class CreateOrderHelper {    //helps to converts frontend DTO → PayPal DTO
 
-    public CreateOrderRequest buildCreateOrderRequest(
-            CreateOrderReq createOrderReq
-    ) {
+    public CreateOrderRequest buildCreateOrderRequest(CreateOrderReq createOrderReq) {
 
         log.info("Building PayPal CreateOrderRequest");
 

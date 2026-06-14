@@ -39,22 +39,13 @@ public class TokenService {
 
         //headers
         HttpHeaders headers = new HttpHeaders();
-
         headers.setBasicAuth(clientId, clientSecret);
-
-        headers.setContentType(
-                MediaType.APPLICATION_FORM_URLENCODED
-        );
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         //body
-        MultiValueMap<String, String> body =
-                new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 
-
-        body.add(
-                Constants.GRANT_TYPE,
-                Constants.CLIENT_CREDENTIALS
-        );
+        body.add(Constants.GRANT_TYPE, Constants.CLIENT_CREDENTIALS);
 
         HttpRequest httpRequest = HttpRequest.builder()
                 .httpMethod(HttpMethod.POST)
@@ -63,20 +54,15 @@ public class TokenService {
                 .body(body)
                 .build();
 
-        ResponseEntity<String> response =
-                httpServiceEngine.makeHttpCall(httpRequest);
+        ResponseEntity<String> response = httpServiceEngine.makeHttpCall(httpRequest);
 
         log.info("OAuth response received: {}", response.getBody());
 
         try {
-
             ObjectMapper objectMapper = new ObjectMapper();
 
             PaypalAuthResponse authResponse =
-                    objectMapper.readValue(
-                            response.getBody(),
-                            PaypalAuthResponse.class
-                    );
+                    objectMapper.readValue(response.getBody(), PaypalAuthResponse.class);
 
             log.info("Access token generated successfully");
 
@@ -87,9 +73,7 @@ public class TokenService {
             log.error("Error parsing PayPal OAuth response", e);
 
             throw new RuntimeException(
-                    "Failed to parse PayPal OAuth response",
-                    e
-            );
+                    "Failed to parse PayPal OAuth response", e);
         }
     }
 }

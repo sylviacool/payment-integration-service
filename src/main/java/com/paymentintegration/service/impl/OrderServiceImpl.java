@@ -37,17 +37,17 @@ import java.util.UUID;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
-    private final TransactionRepository transactionRepository;
-
-    private final ProviderRepository providerRepository;
-
-    private final TransactionStatusRepository transactionStatusRepository;
-
     @Value("${paypal.create-order-url}")
     private String createOrderUrl;
 
     @Value("${paypal.capture-order-url}")
     private String captureOrderUrl;
+
+    private final TransactionRepository transactionRepository;
+
+    private final ProviderRepository providerRepository;
+
+    private final TransactionStatusRepository transactionStatusRepository;
 
     private final TokenService tokenService;
 
@@ -62,33 +62,23 @@ public class OrderServiceImpl implements OrderService {
 
             log.info("Creating PayPal order");
 
-            String accessToken =
-                    tokenService.getAccessToken();
+            String accessToken = tokenService.getAccessToken();
 
             log.info("Access token generated");
 
             CreateOrderRequest paypalRequest =
-                    createOrderHelper.buildCreateOrderRequest(
-                            createOrderReq
-                    );
+                    createOrderHelper.buildCreateOrderRequest(createOrderReq);
 
             ObjectMapper objectMapper =
                     new ObjectMapper();
 
-            String requestBody =
-                    objectMapper.writeValueAsString(
-                            paypalRequest
-                    );
+            String requestBody = objectMapper.writeValueAsString(paypalRequest);
 
             log.info("PayPal request body: {}", requestBody);
 
             HttpHeaders headers = new HttpHeaders();
-
             headers.setBearerAuth(accessToken);
-
-            headers.setContentType(
-                    MediaType.APPLICATION_JSON
-            );
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpRequest httpRequest =
                     HttpRequest.builder()
@@ -98,14 +88,12 @@ public class OrderServiceImpl implements OrderService {
                             .body(requestBody)
                             .build();
 
-
             ProviderEntity provider =
                     providerRepository
                             .findByProviderName("PAYPAL")
                             .orElseThrow(() ->
                                     new ResourceNotFoundException("Provider not found")
                             );
-
 
 
             TransactionStatusEntity createdStatus =
@@ -123,25 +111,13 @@ public class OrderServiceImpl implements OrderService {
                             );
 
 
-            TransactionEntity transactionEntity =
-                    new TransactionEntity();
+            TransactionEntity transactionEntity = new TransactionEntity();
 
             transactionEntity.setUserId(1L);
-
-            transactionEntity.setAmount(
-                    new BigDecimal(createOrderReq.getAmount())
-            );
-
-            transactionEntity.setCurrency(
-                    createOrderReq.getCurrency()
-            );
-
-            transactionEntity.setTxnReference(
-                    UUID.randomUUID().toString()
-            );
-
+            transactionEntity.setAmount(new BigDecimal(createOrderReq.getAmount()));
+            transactionEntity.setCurrency(createOrderReq.getCurrency());
+            transactionEntity.setTxnReference(UUID.randomUUID().toString());
             transactionEntity.setProvider(provider);
-
             transactionEntity.setTransactionStatus(createdStatus);
 
             transactionRepository.save(transactionEntity);
@@ -159,7 +135,6 @@ public class OrderServiceImpl implements OrderService {
                     new ObjectMapper();
 
 
-
             CreateOrderResponse createOrderResponse =
                     responseMapper.readValue(
                             response.getBody(),
@@ -167,13 +142,8 @@ public class OrderServiceImpl implements OrderService {
                     );
 
 
-            transactionEntity.setProviderReference(
-                    createOrderResponse.getId()
-            );
-
-            transactionEntity.setTransactionStatus(
-                    pendingStatus
-            );
+            transactionEntity.setProviderReference(createOrderResponse.getId());
+            transactionEntity.setTransactionStatus(pendingStatus);
 
             transactionRepository.save(transactionEntity);
 
@@ -193,17 +163,9 @@ public class OrderServiceImpl implements OrderService {
 
             OrderRes orderRes = new OrderRes();
 
-            orderRes.setOrderId(
-                    createOrderResponse.getId()
-            );
-
-            orderRes.setPaypalStatus(
-                    createOrderResponse.getStatus()
-            );
-
-            orderRes.setRedirectUrl(
-                    redirectUrl
-            );
+            orderRes.setOrderId(createOrderResponse.getId());
+            orderRes.setPaypalStatus(createOrderResponse.getStatus());
+            orderRes.setRedirectUrl(redirectUrl);
 
             return orderRes;
 
@@ -226,9 +188,7 @@ public class OrderServiceImpl implements OrderService {
 
             log.info("Capturing PayPal order: {}", orderId);
 
-            String accessToken =
-                    tokenService.getAccessToken();
-
+            String accessToken = tokenService.getAccessToken();
 
             TransactionStatusEntity successStatus =
                     transactionStatusRepository

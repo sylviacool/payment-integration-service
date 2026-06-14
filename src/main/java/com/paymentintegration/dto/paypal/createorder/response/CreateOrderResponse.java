@@ -1,11 +1,12 @@
 package com.paymentintegration.dto.paypal.createorder.response;
 
+import com.paymentintegration.dto.paypal.createorder.request.Paypal;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class CreateOrderResponse {
+public class CreateOrderResponse { //Paypal to BE
 
     private String id;
 
