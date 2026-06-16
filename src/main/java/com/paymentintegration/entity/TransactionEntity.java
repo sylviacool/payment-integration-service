@@ -43,4 +43,15 @@ public class TransactionEntity {
     @ManyToOne
     @JoinColumn(name = "txn_status_id")
     private TransactionStatusEntity transactionStatus;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
