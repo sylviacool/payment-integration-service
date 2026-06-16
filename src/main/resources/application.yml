@@ -67,3 +67,15 @@ logging:
 # =========================================
 jwt:
   secret: ${JWT_SECRET}
+
+
+# =========================================
+# App Users Config
+# =========================================
+app:
+  admin:
+    username: ${APP_ADMIN_USERNAME}
+    password: ${APP_ADMIN_PASSWORD}
+  user:
+    username: ${APP_USER_USERNAME}
+    password: ${APP_USER_PASSWORD}
