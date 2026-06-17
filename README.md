@@ -16,7 +16,7 @@ A Spring Boot backend application for PayPal payment processing, including OAuth
 - Flyway database migrations
 - Docker containerization
 - Railway cloud deployment
-- AWS EC2 deployment experience
+- AWS EC2 deployment
 - Unit testing with JUnit and Mockito
 - Centralized exception handling
 - Reusable HTTP communication engine
@@ -50,34 +50,33 @@ A Spring Boot backend application for PayPal payment processing, including OAuth
 
 ## Architecture
 
-The application follows a modular monolithic architecture with layered backend design.
+The application follows a layered monolithic
+architecture (N-Tier) with clear separation
+of concerns across four layers.
 
 ### Layered Structure
 
-```text
-Controller Layer
-        ↓
-Service Layer
-        ↓
-Helper / Integration Layer
-        ↓
-Repository Layer
-        ↓
+Controller Layer  → handles HTTP requests/responses
+       ↓
+Service Layer     → contains all business logic
+       ↓
+Repository Layer  → handles all database operations
+       ↓
 PostgreSQL Database
-```
 
-### Main Modules
+### Main Packages
 
 - `controller` → REST API endpoints
-- `service` → business logic
-- `paypal` → PayPal integration DTOs and API communication
-- `http` → reusable HTTP communication engine
-- `security` → JWT authentication and authorization
+- `service`    → business logic and PayPal integration
 - `repository` → database access layer
-- `helper` → request transformation and utility logic
-- `exception` → centralized exception handling
+- `entity`     → database table mappings
+- `dto`        → request and response data transfer objects
+- `security`   → JWT authentication and authorization
+- `exception`  → centralized exception handling
+- `config`     → application configuration beans
+- `helper`     → request transformation utilities
+- `http`       → reusable HTTP communication engine
 
-The application is currently deployed as a single Spring Boot application while maintaining clear modular separation internally.
 
 ---
 
@@ -179,7 +178,7 @@ Migration examples:
 | POST | `/v1/orders/{orderId}/capture` | Capture PayPal order |
 | POST | `/v1/webhooks/paypal` | PayPal webhook endpoint |
 | GET | `/public/health` | Health check |
-| GET | `/test-token` | Generate PayPal token |
+
 
 ---
 
@@ -237,6 +236,12 @@ PAYPAL_CLIENT_SECRET=
 PAYPAL_OAUTH_URL=
 PAYPAL_CREATE_ORDER_URL=
 PAYPAL_CAPTURE_ORDER_URL=
+
+APP_ADMIN_USERNAME=
+APP_ADMIN_PASSWORD=
+APP_USER_USERNAME=
+APP_USER_PASSWORD=
+JWT_SECRET=
 ```
 
 ---
