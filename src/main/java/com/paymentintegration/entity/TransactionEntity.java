@@ -48,6 +48,8 @@ public class TransactionEntity {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        System.out.println("@@@ PrePersist called! createdAt = " + this.createdAt);
+
     }
 
     @PreUpdate
