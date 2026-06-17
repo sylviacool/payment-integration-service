@@ -56,13 +56,21 @@ of concerns across four layers.
 
 ### Layered Structure
 
-Controller Layer  → handles HTTP requests/responses
-       ↓
-Service Layer     → contains all business logic
-       ↓
-Repository Layer  → handles all database operations
-       ↓
-PostgreSQL Database
+- **Controller Layer**
+       - Handles HTTP requests and responses
+       - Exposes REST API endpoints
+
+- **Service Layer**
+       - Contains all business logic
+       - Coordinates external API calls
+
+- **Repository Layer**
+       - Handles all database operations
+       - Uses Spring Data JPA
+
+- **PostgreSQL Database**
+       - Stores all application data
+
 
 ### Main Packages
 
