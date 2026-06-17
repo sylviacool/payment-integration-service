@@ -29,7 +29,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
+
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -119,6 +121,8 @@ public class OrderServiceImpl implements OrderService {
             transactionEntity.setTxnReference(UUID.randomUUID().toString());
             transactionEntity.setProvider(provider);
             transactionEntity.setTransactionStatus(createdStatus);
+            transactionEntity.setCreatedAt(LocalDateTime.now());
+            transactionEntity.setUpdatedAt(LocalDateTime.now());
 
             transactionRepository.save(transactionEntity);
 
